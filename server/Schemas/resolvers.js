@@ -23,7 +23,7 @@ const resolvers = {
     
           return { token, user };
         },
-        loginUser: async (parent, { email, password }) => {
+        login: async (parent, { email, password }) => {
           const user = await User.findOne({ email });
     
           if (!user) {
@@ -70,4 +70,4 @@ const resolvers = {
     }
 };
 
-module.exports = typeDefs;
+module.exports = resolvers;
