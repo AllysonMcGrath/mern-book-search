@@ -6,7 +6,7 @@ const expiration = '2h';
 
 module.exports = {
   // function for our authenticated routes
-  authMiddleware: function ({ req }) {
+  authMiddleware: function ({ req, res }) {
     // allows token to be sent via  req.query or headers
     let token = req.body.token || req.query.token || req.headers.authorization;
 
@@ -32,6 +32,18 @@ module.exports = {
     // next();
     return req;
   },
+  authenticate: async function(auth) {
+    if (!auth) throw new AuthenticationError('you must be logged in!');
+
+    const token = auth.split('Bearer ')[1];
+    if (!token) throw new AuthenticationError('you should provide a token!');
+
+    return await jwt.verify(token, 'mysecret', (err, decoded) => {
+      if (err) throw new AuthenticationError('invalid token!');
+      return decoded;
+    });
+  },
+
   signToken: function ({ username, email, _id }) {
     const payload = { username, email, _id };
 
